@@ -816,6 +816,7 @@ tr.woocommerce-product-attributes-item > td {
 }
 .object-params {
     grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
 }
 .product-tab__title {
     display: block;
@@ -2739,7 +2740,7 @@ body #page_content_wrapper .sidebar .content .sidebar_widget li ul li {
     }  
 }
 @media (max-width: 1399px) {
-    html body, body p {
+    html body, body p, body ul li {
         font-size: 18px;
         line-height: 160%;
     }
@@ -2971,6 +2972,12 @@ body #page_content_wrapper .sidebar .content .sidebar_widget li ul li {
     .object-price {  
         font-size: 30px;
     }
+    .object-params-table__key {
+        font-size: 18px;
+    }
+    .tab-document-list {
+        grid-template-columns: repeat(4, 1fr);
+    }
    
 }
 @media (max-width: 1199px) {
@@ -2995,7 +3002,7 @@ body #page_content_wrapper .sidebar .content .sidebar_widget li ul li {
     body h2.h2-fz-50 {
         font-size: 23px;
     }    
-    html body, body p {
+    html body, body p, body ul li {
         font-size: 16px;
     }
     .product-card__wrapper .woocommerce-loop-product__title {
@@ -3473,6 +3480,20 @@ body #page_content_wrapper .sidebar .content .sidebar_widget li ul li {
         padding-left: 20px;
         padding-right: 20px;
     }
+    .object-params {
+        grid-template-columns: repeat(2, 1fr);
+        row-gap: 40px;
+    }
+    .tab-document-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    body.woocommerce div.product div.woocommerce-tabs div.woocommerce-Tabs-panel.panel {
+        padding-left: 26px;
+        padding-right: 26px;
+    }
+    body .hero-section[data-type=type-1] .page-description {
+        display: none;
+    }
 }
 
 @media (max-width: 930px) and (max-height: 420px) {
@@ -3486,7 +3507,7 @@ body #page_content_wrapper .sidebar .content .sidebar_widget li ul li {
     .archive-main {
         padding-bottom: 60px;
     }
-    html body, body p { 
+    html body, body p, body ul li { 
         font-size: 14px;
         line-height: 145%;
     }
@@ -3569,7 +3590,13 @@ body #page_content_wrapper .sidebar .content .sidebar_widget li ul li {
     body section.decor h2.expert-section__title {        
         margin-bottom: 28px;
     }
-    
+    .product-tab__title h3 {
+        font-size: 22px;
+        font-weight: 500;
+    }
+    .object-params-table__value {        
+        font-size: 16px;
+    }
 }
 
 @media (max-width: 767px) {
@@ -3825,6 +3852,17 @@ body #page_content_wrapper .sidebar .content .sidebar_widget li ul li {
     li.woo.cat_item {
         grid-template-rows: 55vw 1fr;
     }
+    .product-tab__title h3 {
+        font-size: 22px;
+        font-weight: 500;
+    }
+    .object-params {
+        grid-template-columns: 1fr;
+        row-gap: 30px;
+    }
+    .object-params-table__value {        
+        font-size: 16px;
+    }
 }
 
 @media (max-width: 767px) and (max-height: 420px) {
@@ -3906,6 +3944,9 @@ body #page_content_wrapper .sidebar .content .sidebar_widget li ul li {
     body .ct-hidden-sm {
         display: flex !important;
     }
+    body .hero-section[data-type=type-1] .page-description.ct-hidden-sm {
+        display: none !important;
+    }
 }
 
 @media (max-width: 599px) {
@@ -3947,7 +3988,7 @@ body #page_content_wrapper .sidebar .content .sidebar_widget li ul li {
         margin-bottom: -0.7vw;
         font-size: 8vw;
     }
-    html body, body p { 
+    html body, body p, body ul li { 
         font-size: 14px;
         line-height: 145%;
     }
@@ -4275,6 +4316,20 @@ body #page_content_wrapper .sidebar .content .sidebar_widget li ul li {
     }
     .object-price {
         font-size: 24px;
+    }
+    body.woocommerce div.product div.woocommerce-tabs div.woocommerce-Tabs-panel.panel {
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 26px;
+    }
+    .product-tab__title h3 {
+        font-size: 20px;
+    }
+    .object-params-table__key {
+        font-size: 15px;
+    }
+    .object-params-table__value {
+        font-size: 14px;
     }
 }
 

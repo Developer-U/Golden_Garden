@@ -493,7 +493,7 @@ function child_new_tab_configurations($tab_fields_postfix)
                     <h3>Об объекте</h3>
                 </span>
 
-                <div class="object-params d-grid gap-2">
+                <div class="object-params d-grid">
                     <table class="object-params__table object-params-table">
                         <tr>
                             <td class="object-params-table__key">Тип объекта</td>
@@ -653,7 +653,7 @@ function child_new_tab_configurations($tab_fields_postfix)
                     <h3>О здании</h3>
                 </span>
 
-                <div class="object-params d-grid gap-2">
+                <div class="object-params d-grid">
                     <table class="object-params__table object-params-table">
                         <tr>
                             <td class="object-params-table__key">Тип дома</td>
