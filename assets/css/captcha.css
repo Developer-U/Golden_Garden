@@ -1,0 +1,32 @@
+.quiz_captcha {
+    font-size: 18px;
+    margin-top: 0.6rem;
+}
+input[type=text].wpcf7-quiz {
+    width: 200px;
+    display: block;
+}
+input[type=text].wpcf7-quiz, input[type=text].wpcf7-quiz::placeholder {
+    font-size: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.wpcf7-quiz-label {
+    font-size: 22px;
+    font-family: "Arial";
+}
+
+@media (min-width: 1921px) {
+    .wpcf7-quiz-label {
+        font-size: 1vw;
+    }
+    input[type=text].wpcf7-quiz, input[type=text].wpcf7-quiz::placeholder {
+        width: 8vw;
+        height: 1.6vw;
+        font-size: 0.9vw;
+    }
+}
+@media (max-width: 479.98px) {
+    .wpcf7 form .wpcf7-form-control-wrap label {
+        display: block;
+    }
+}
