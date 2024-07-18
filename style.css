@@ -32,6 +32,12 @@ html {
     --french: 'French-Kiss', serif;  
     --nunito: 'Nunito Sans', Sans-Serif;
 }
+a[href^=tel], h2 {
+    font-size: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+    color: inherit;
+}
 body ul, body ul * {
     list-style-type: none;
     padding-left: 0;
@@ -3493,6 +3499,10 @@ body #page_content_wrapper .sidebar .content .sidebar_widget li ul li {
     }
     body .hero-section[data-type=type-1] .page-description {
         display: none;
+    }
+    .product-card__wrapper:hover .product-content-hidden {
+        opacity: 0;
+        visibility: hidden;
     }
 }
 

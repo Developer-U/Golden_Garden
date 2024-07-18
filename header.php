@@ -13,9 +13,9 @@
 <html <?php language_attributes(); ?><?php echo blocksy_html_attr() ?>>
 <head>
 	<?php do_action('blocksy:head:start') ?>
-
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+	<meta name="format-detection" content="telephone=no">
 	<link rel="profile" href="https://gmpg.org/xfn/11">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"/>
 	<?php wp_head(); ?>
