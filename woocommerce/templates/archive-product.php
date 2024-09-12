@@ -68,6 +68,8 @@ if (woocommerce_product_loop()) {
 			 */
 			do_action('woocommerce_shop_loop');
 
+			
+
 			wc_get_template_part('content', 'product');
 		}
 	}

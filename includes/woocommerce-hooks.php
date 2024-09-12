@@ -18,12 +18,30 @@ function add_search_product_form()
     }
 }
 
+// Удалим Поиск по объектам для страниц категории Новые объекты
+add_action('woocommerce_before_shop_loop', 'remove_search_product_form_start', 4);
+function remove_search_product_form_start()
+{
+    if (is_product_category('new_buildings') ) {
+        echo '<div style="display: none">';
+    }
+}
+
+// Удалим Поиск по объектам для страниц категории Новые объекты
+add_action('woocommerce_before_shop_loop', 'remove_search_product_form_end', 6);
+function remove_search_product_form_end()
+{
+    if (is_product_category('new_buildings') ) {
+        echo '</div>';
+    }
+}
+
 // Удаляем со страницы каталога дефолтный вывод категорий
 add_action('woocommerce_before_shop_loop', 'delete_shop_categories_start', 5);
 
 function delete_shop_categories_start()
 {
-    if (is_shop()) {
+    if (is_shop() || is_product_category('new_buildings')) {
         echo '<div style="display: none">';
     }
 }
@@ -32,7 +50,7 @@ add_action('woocommerce_after_shop_loop', 'delete_shop_categories_end', 20);
 
 function delete_shop_categories_end()
 {
-    if (is_shop()) {
+    if (is_shop() || is_product_category('new_buildings')) {
         echo '</div>';
     }
 }
@@ -45,6 +63,7 @@ function add_cat_list()
         'taxonomy' => $taxonomy,
         'hide_empty' => $empty,
         'limit' => 99,
+        'parent' => 0,
     );
     $all_categories = get_categories($args); ?>
 
@@ -95,6 +114,56 @@ function add_new_categories_list()
         // echo do_shortcode('[product_categories columns="2" parent="0"]');
         echo add_cat_list();
     }
+    if (is_product_category('new_buildings')) {
+
+        $taxonomy = 'product_cat';
+        $empty = 0;
+        $args_2 = array(
+            'taxonomy' => $taxonomy,
+            'hide_empty' => $empty,
+            'limit' => 99,
+            'parent' => 15,
+            
+        );
+        $all_categories_2 = get_categories($args_2); ?>
+
+        <ul data-products="type-1" class="products columns-2 cat-list">
+
+            <?php
+            foreach ($all_categories_2 as $cat) {
+                $category_id = $cat->term_id;
+                $thumbnail_id = get_woocommerce_term_meta($category_id, 'thumbnail_id', true);
+                $cat_image = wp_get_attachment_url($thumbnail_id);
+                ?>
+
+                <li class="woo cat_item">
+                    <figure>
+                        <a class="ct-media-container cat_item__image" href="<?php echo get_term_link($cat); ?>"
+                            aria-label="<?php echo $cat->name; ?>">
+                            <img src="<?php echo $cat_image; ?>" />
+                        </a>
+                    </figure>
+                    <div class="product-card__wrapper cat_item__wrapper">
+                        <div class="cat-item__top">
+                            <h2 class="woocommerce-loop-product__title cat_item__title">
+                                <a class="woocommerce-LoopProduct-link woocommerce-loop-product__link"
+                                    href="<?php echo get_term_link($cat); ?>">
+                                    <?php echo $cat->name; ?>
+                                </a>
+                            </h2>
+
+                            <div class="cat_item__description post"><?php echo $cat->description; ?></div>
+                        </div>
+
+                        <a href="<?php echo get_term_link($cat); ?>" class="button transparent-btn cat_item__button">
+                            Смотреть объекты
+                        </a>
+                    </div>
+                </li>
+
+            <?php } ?>
+        </ul>  
+    <?php }
 }
 
 // Добавим обёртку в карточку товара в листинге после заголовка
@@ -110,6 +179,17 @@ add_action('woocommerce_after_shop_loop_item', 'end_div_before_title', 20);
 function end_div_before_title()
 {
     echo '</div>';
+}
+
+// В листинге поверх фотографии добавим плашку про акцию
+add_action('woocommerce_before_shop_loop_item', 'add_archive_action_object', 10);
+
+function add_archive_action_object()
+{
+    $action_object_text = get_field('action_object_text');
+    if ( !has_term('new_buildings', 'product_cat') && $action_object_text['size'] && $action_object_text['date']) {
+        echo '<p class="action-object-text archive">Скидка ' . $action_object_text['size'] . ' до ' . $action_object_text['date'] . '</p>';
+    }
 }
 
 // Добавим в карточку в листинге краткие характеристики - поля ACF
@@ -286,12 +366,15 @@ function add_object_price()
 add_filter('woocommerce_product_tabs', 'my_remove_product_tabs', 99);
 function my_remove_product_tabs($tabs)
 {
-    unset($tabs['description']); // Удаление вкладки Описание
     unset($tabs['reviews']); // Удаление вкладки Отзывы
 
-    if (has_term('secondary_housing', 'product_cat')) { // Если это товар категории "Готовое жильё" - удалим вкладку Описание
-        unset($tabs['additional_information']);
+    if (has_term('new_buildings', 'product_cat')) { // Если это товар категории "Готовое жильё" - удалим вкладку Описание
+        unset($tabs['description']);
     }
+
+    // if (has_term('new_buildings', 'product_cat')) { // Если это товар категории "Готовое жильё" - удалим вкладку Описание
+    //     unset($tabs['additional_information']);
+    // }
     return $tabs;
 
 }
@@ -306,16 +389,38 @@ function my_rename_tabs($tabs)
     return $tabs;
 }
 
+// В объектах вторички под фотографиями добавим ссылку на галерею внизу
+add_action('woocommerce_single_product_summary', 'add_link_to_gallery', 10);
+
+function add_link_to_gallery()
+{
+    if (!has_term('new_buildings', 'product_cat') && have_rows('add_tab_object_gallery')) {
+        echo '<a class="product-more-photo" href="#tab-tab_object_gallery">Показать ещё фото</a>';
+    }
+}
+
+// В объектах вторички поверх фотографии добавим плашку про акцию
+add_action('woocommerce_before_single_product_summary', 'add_action_object', 10);
+
+function add_action_object()
+{
+    $action_object_text = get_field('action_object_text');
+    if (!has_term('new_buildings', 'product_cat') && $action_object_text['size'] && $action_object_text['date']) {
+        echo '<p class="action-object-text">Скидка ' . $action_object_text['size'] . ' до ' . $action_object_text['date'] . '</p>';
+    }
+}
+
+
 // Функция добавления вкладок в карточке товара
 function add_tab_configurations($tabs_objects)
 {
-    if (has_term('secondary_housing', 'product_cat')) { // Только для категории "Готовое жильё"
-        $tabs_objects['tab_object_params'] = array(
-            'title' => 'Характеристики объекта',
-            'priority' => 5,
-            'callback' => 'child_new_tab_configurations'
-        );
-    }
+    // if (has_term('secondary_housing', 'product_cat')) { // Только для категории "Готовое жильё"
+    //     $tabs_objects['tab_object_params'] = array(
+    //         'title' => 'Характеристики объекта',
+    //         'priority' => 5,
+    //         'callback' => 'child_new_tab_configurations'
+    //     );
+    // }
 
     if (has_term('secondary_housing', 'product_cat')) { // Только для категории "Готовое жильё"
         $tabs_objects['tab_object_gallery'] = array(
@@ -482,222 +587,12 @@ function child_new_tab_configurations($tab_fields_postfix)
     ?>
     <div class="product-tab__content">
         <?php
-        // Вёрстка таба "Характеристики объекта" только для категории "Готовое жильё"
-        if ($tab_fields_postfix == 'tab_object_params' && has_term('secondary_housing', 'product_cat')) {
-            $object_params = get_field('object_params');
-            $building_params = get_field('building_params');
-            ?>
-
-            <article class="product-tab__block">
-                <span class="product-tab__title">
-                    <h3>Об объекте</h3>
-                </span>
-
-                <div class="object-params d-grid">
-                    <table class="object-params__table object-params-table">
-                        <tr>
-                            <td class="object-params-table__key">Тип объекта</td>
-                            <td class="object-params-table__value">
-                                <?php
-                                if ($object_params['type']) {
-                                    echo $object_params['type'];
-                                } else {
-                                    echo '—';
-                                } ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="object-params-table__key">Количество комнат</td>
-                            <td class="object-params-table__value">
-                                <?php
-                                if ($object_params['rooms_length']) {
-                                    echo $object_params['rooms_length'] . '&nbsp;ком.';
-                                } else {
-                                    echo '—';
-                                } ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="object-params-table__key">Этаж</td>
-                            <td class="object-params-table__value">
-                                <?php
-                                if ($object_params['level_from'] && $object_params['level_to']) {
-                                    echo $object_params['level_from'] . '&nbsp;из&nbsp;' . $object_params['level_to'];
-                                } elseif ($object_params['level_from']) {
-                                    echo $object_params['level_from'];
-                                } else {
-                                    echo '—';
-                                } ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="object-params-table__key">Отопление</td>
-                            <td class="object-params-table__value">
-                                <?php
-                                if ($object_params['heating']) {
-                                    echo $object_params['heating'];
-                                } else {
-                                    echo '—';
-                                } ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="object-params-table__key">Балкон/лоджия</td>
-                            <td class="object-params-table__value">
-                                <?php
-                                if ($object_params['balcony']) {
-                                    echo $object_params['balcony'];
-                                } else {
-                                    echo '—';
-                                } ?>
-                            </td>
-                        </tr>
-                    </table>
-                    <table>
-                        <tr>
-                            <td class="object-params-table__key">Площадь общая</td>
-                            <td class="object-params-table__value">
-                                <?php
-                                if ($object_params['total_area']) {
-                                    echo $object_params['total_area'] . '&nbsp;м²';
-                                } else {
-                                    echo '—';
-                                } ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="object-params-table__key">Площадь жилая</td>
-                            <td class="object-params-table__value">
-                                <?php
-                                if ($object_params['living_area']) {
-                                    echo $object_params['living_area'] . '&nbsp;м²';
-                                } else {
-                                    echo '—';
-                                } ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="object-params-table__key">Высота потолков</td>
-                            <td class="object-params-table__value">
-                                <?php
-                                if ($object_params['ceiling_height']) {
-                                    echo $object_params['ceiling_height'] . '&nbsp;м';
-                                } else {
-                                    echo '—';
-                                } ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="object-params-table__key">Санузел</td>
-                            <td class="object-params-table__value">
-                                <?php
-                                if ($object_params['bathroom']) {
-                                    echo $object_params['bathroom'];
-                                } else {
-                                    echo '—';
-                                } ?>
-                            </td>
-                        </tr>
-                    </table>
-                    <table>
-                        <tr>
-                            <td class="object-params-table__key">Планировка</td>
-                            <td class="object-params-table__value">
-                                <?php
-                                if ($object_params['configuration']) {
-                                    echo $object_params['configuration'];
-                                } else {
-                                    echo '—';
-                                } ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="object-params-table__key">Вид из окон</td>
-                            <td class="object-params-table__value">
-                                <?php
-                                if ($object_params['view']) {
-                                    echo $object_params['view'];
-                                } else {
-                                    echo '—';
-                                } ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="object-params-table__key">Ремонт</td>
-                            <td class="object-params-table__value">
-                                <?php
-                                if ($object_params['repair']) {
-                                    echo $object_params['repair'];
-                                } else {
-                                    echo '—';
-                                } ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="object-params-table__key">Газ</td>
-                            <td class="object-params-table__value">
-                                <?php
-                                if ($object_params['gas']) {
-                                    echo $object_params['gas'];
-                                } else {
-                                    echo '—';
-                                } ?>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </article>
-
-            <article class="product-tab__block">
-                <span class="product-tab__title">
-                    <h3>О здании</h3>
-                </span>
-
-                <div class="object-params d-grid">
-                    <table class="object-params__table object-params-table">
-                        <tr>
-                            <td class="object-params-table__key">Тип дома</td>
-                            <td class="object-params-table__value">
-                                <?php
-                                if ($building_params['type']) {
-                                    echo $building_params['type'];
-                                } else {
-                                    echo '—';
-                                } ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="object-params-table__key">Лифт</td>
-                            <td class="object-params-table__value">
-                                <?php
-                                if ($building_params['elevator']) {
-                                    echo $building_params['elevator'];
-                                } else {
-                                    echo '—';
-                                } ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="object-params-table__key">Год постройки</td>
-                            <td class="object-params-table__value">
-                                <?php
-                                if ($building_params['build_year']) {
-                                    echo $building_params['build_year'];
-                                } else {
-                                    echo '—';
-                                } ?>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </article>
-        <?php }
 
         // Вёрстка таба "Фотогалерея" только для категории "Готовое жильё"
         if ($tab_fields_postfix == 'tab_object_gallery' && has_term('secondary_housing', 'product_cat')) {
             ?>
 
-            <ul class="product-tab__configurations tab-document-list d-grid gap-1 gap-sm-3">
+            <ul id="gallery_product" class="product-tab__configurations tab-document-list d-grid gap-1 gap-sm-3">
                 <?php
                 if (have_rows('add_' . $tab_fields_postfix)) {
                     while (have_rows('add_' . $tab_fields_postfix)) {
@@ -781,6 +676,24 @@ function add_expert_section()
 {
     echo get_template_part('template-parts/expert', 'section');
 }
+
+
+// Добавим в карточку объекта ниже всех табов форму ОС
+add_action('woocommerce_product_after_tabs', 'add_cta_single_form', 5);
+
+function add_cta_single_form()
+{ ?>
+    <div class="product-entry-wrapper product-form-wrap">
+        <div id="product_form" class="product-form">
+            <h3 class="product-form__title">
+                Оставьте заявку и мы предложим все варианты по данному объекту!
+            </h3>
+
+            <?php echo do_shortcode('[contact-form-7 id="aedfc18" title="Получить предложения по объекту"]'); ?>
+        </div>
+    </div>
+<?php }
+
 
 
 

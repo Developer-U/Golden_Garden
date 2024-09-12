@@ -91,56 +91,7 @@ $how_see_block_two = get_field( 'how_see_block_two', 'options' );
             </div>
         </div>
 
-        <div class="contacts__wrapper contacts-wrapper d-flex flex-column flex-md-row">
-            <!-- Get Presentation Block -->
-            <?php if($presentation['link'] && $presentation['title']) { ?>
-                <div class="contacts-wrapper__block">                
-                    <h2 class="contacts-wrapper__title h2-fz-50">
-                        Cкачать презентацию:
-                    </h2>                
-
-                    <div class="about-box__text about-box__text_contacts light">                    
-                        <a href="<?php echo $presentation['link']; ?>" class="contacts__presentation">
-                            <?php echo $presentation['title']; ?> 
-                        </a>
-                        <span><?php echo $presentation['size']; ?></span>                     
-                    </div>
-                </div>
-            <?php } ?>
-
-            <!-- Right social block -->
-            <div class="contacts-wrapper__block bottom black">
-                <h2 class="contacts-wrapper__title h2-fz-50">
-                    Заказать просмотр:
-                </h2>
-
-                <div class="about-box__text about-box__text_contacts black">
-                    <div class="how-see__block see-block">
-                        <a class="button gold-btn see-block__btn mb-4" href="/quizle/zakazat-prezentaciyu-offlajn/" target="_blank">
-                            Заказать презентацию оффлайн (очно)
-                        </a>  
-                        
-                        <?php if( $how_see_block_one ) { ?>
-                            <p class="see-block__text">
-                                <?php echo $how_see_block_one; ?>
-                            </p>
-                        <?php } ?>  
-                    </div>
-                        
-                    <div class="how-see__block see-block">
-                        <a class="button gold-btn see-block__btn mb-4" href="/quizle/zakazat-prezentaciyu-onlajn/" target="_blank">
-                            Заказать презентацию онлайн
-                        </a>  
-                        
-                        <?php if( $how_see_block_two ) { ?>
-                            <p class="see-block__text">
-                                <?php echo $how_see_block_two; ?>
-                            </p>
-                        <?php } ?>  
-                    </div>
-                </div>
-            </div>
-        </div>
+        
 
     </div>
 </section>

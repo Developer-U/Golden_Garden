@@ -1,10 +1,18 @@
-window.addEventListener('DOMContentLoaded', function(){  
+window.addEventListener('DOMContentLoaded', function(){
+    const more_info_btn = document.querySelector('.product-more-photo');
 
-        
+    if(more_info_btn) {
+        more_info_btn.addEventListener('click', function(e){       
+
+            const element = document.querySelector('#tab-title-tab_object_gallery a');        
+            if (element) { 
+                element.click();
+              }
+        });
+    }    
+
     const availableScreenWidth = window.screen.availWidth;   
       
-    
-    
     // Открытие бургерного меню
     var menu = document.querySelector('.popup-menu')
     ,burger_open = document.querySelector('.burger')  
