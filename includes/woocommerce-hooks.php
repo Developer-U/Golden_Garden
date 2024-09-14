@@ -22,7 +22,7 @@ function add_search_product_form()
 add_action('woocommerce_before_shop_loop', 'remove_search_product_form_start', 4);
 function remove_search_product_form_start()
 {
-    if (is_product_category('new_buildings') ) {
+    if (is_product_category('new_buildings')) {
         echo '<div style="display: none">';
     }
 }
@@ -31,7 +31,7 @@ function remove_search_product_form_start()
 add_action('woocommerce_before_shop_loop', 'remove_search_product_form_end', 6);
 function remove_search_product_form_end()
 {
-    if (is_product_category('new_buildings') ) {
+    if (is_product_category('new_buildings')) {
         echo '</div>';
     }
 }
@@ -123,7 +123,7 @@ function add_new_categories_list()
             'hide_empty' => $empty,
             'limit' => 99,
             'parent' => 15,
-            
+
         );
         $all_categories_2 = get_categories($args_2); ?>
 
@@ -162,7 +162,7 @@ function add_new_categories_list()
                 </li>
 
             <?php } ?>
-        </ul>  
+        </ul>
     <?php }
 }
 
@@ -187,7 +187,7 @@ add_action('woocommerce_before_shop_loop_item', 'add_archive_action_object', 10)
 function add_archive_action_object()
 {
     $action_object_text = get_field('action_object_text');
-    if ( !has_term('new_buildings', 'product_cat') && $action_object_text['size'] && $action_object_text['date']) {
+    if (!has_term('new_buildings', 'product_cat') && $action_object_text['size'] && $action_object_text['date']) {
         echo '<p class="action-object-text archive">Скидка ' . $action_object_text['size'] . ' до ' . $action_object_text['date'] . '</p>';
     }
 }
@@ -389,12 +389,12 @@ function my_rename_tabs($tabs)
     return $tabs;
 }
 
-// В объектах вторички под фотографиями добавим ссылку на галерею внизу
+// Под фотографиями добавим ссылку на галерею внизу
 add_action('woocommerce_single_product_summary', 'add_link_to_gallery', 10);
 
 function add_link_to_gallery()
 {
-    if (!has_term('new_buildings', 'product_cat') && have_rows('add_tab_object_gallery')) {
+    if (have_rows('add_tab_object_gallery')) {
         echo '<a class="product-more-photo" href="#tab-tab_object_gallery">Показать ещё фото</a>';
     }
 }
@@ -422,13 +422,15 @@ function add_tab_configurations($tabs_objects)
     //     );
     // }
 
-    if (has_term('secondary_housing', 'product_cat')) { // Только для категории "Готовое жильё"
+
+    if (have_rows('add_tab_object_gallery')) {  // Видео
         $tabs_objects['tab_object_gallery'] = array(
             'title' => 'Фотогалерея',
-            'priority' => 10,
+            'priority' => 20,
             'callback' => 'child_new_tab_configurations'
         );
     }
+
 
     if (get_field('product_video') || get_field('product_video_link')) {  // Видео
         $tabs_objects['tab_video'] = array(
@@ -589,7 +591,7 @@ function child_new_tab_configurations($tab_fields_postfix)
         <?php
 
         // Вёрстка таба "Фотогалерея" только для категории "Готовое жильё"
-        if ($tab_fields_postfix == 'tab_object_gallery' && has_term('secondary_housing', 'product_cat')) {
+        if ($tab_fields_postfix == 'tab_object_gallery') {
             ?>
 
             <ul id="gallery_product" class="product-tab__configurations tab-document-list d-grid gap-1 gap-sm-3">
@@ -629,6 +631,23 @@ function child_new_tab_configurations($tab_fields_postfix)
                             <div class="youtube-player" data-id="<?php echo $tab_video_link; ?>"></div>
                             <?php
 
+                        }
+                    } ?>
+                </div>
+            <?php } elseif ($tab_content_type === 'видеофайл') { ?>
+                <div class="product-tab__videos tab-videos d-grid gap-3">
+                    <?php
+                    if (have_rows('add_tab_video_file_' . $tab_fields_postfix)) {
+                        while (have_rows('add_tab_video_file_' . $tab_fields_postfix)) {
+                            the_row();
+                            $tab_video_file = get_sub_field('tab_' . $tab_fields_postfix . '_file');
+                            ?>
+                            <video controls class="centered product-tab__file">
+                                <source src="<?php echo esc_url($tab_video_file['url']); ?>" type="video/webm" />
+
+                                <source src="<?php echo esc_url($tab_video_file['url']); ?>" type="video/mp4" />
+                            </video>
+                            <?php
                         }
                     } ?>
                 </div>
