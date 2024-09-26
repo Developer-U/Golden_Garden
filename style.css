@@ -877,6 +877,22 @@ footer.light .social-top__link.vk {
     margin: 5px;
 }
 
+.listing-price {
+    margin-bottom: 0.7rem;
+}
+
+h3.listing-price__item {
+    font-family: var(--nunito);
+    color: var(--gold);
+    font-weight: 600;
+    font-size: 21px;
+}
+
+h3.listing-price__item.single {
+    font-size: 30px;
+    margin-bottom: 0;
+}
+
 .tab-document-list__item.tab-document-list__item_image {
     height: 15vw;
 }
@@ -2629,6 +2645,10 @@ a.contacts-wrapper__link {
         margin-bottom: 1vw;
     }
 
+    h3.listing-price__item {
+        font-size: 1.05vw;
+    }
+
     .product-card__wrapper h2 a {
         font-size: 0.85vw;
     }
@@ -3328,6 +3348,10 @@ a.contacts-wrapper__link {
     .product-card__wrapper .woocommerce-loop-product__title.cat_item__title {
         margin-bottom: 1.3rem;
     }
+
+    h3.listing-price__item {
+        font-size: 20px;
+    }
 }
 
 @media (max-width: 1399px) {
@@ -3656,6 +3680,14 @@ a.contacts-wrapper__link {
 
     h2.speach-text__title, h2.object_week__title {
         font-size: 30px;
+    }
+
+    h3.listing-price__item {
+        font-size: 17px;
+    }
+
+    h3.listing-price__item.single {
+        font-size: 22px;
     }
 
 }
@@ -4464,6 +4496,10 @@ a.contacts-wrapper__link {
     .object-params-table__value {
         font-size: 16px;
     }
+
+    h3.listing-price__item.single {
+        font-size: 18px;
+    }
 }
 
 @media (max-width: 767px) {
@@ -4798,6 +4834,10 @@ a.contacts-wrapper__link {
     .footer-medium__first {
         margin-bottom: 2rem;
     }
+
+    h3.listing-price__item.single {
+        font-size: 18px;
+    }
 }
 
 @media (max-width: 767px) and (max-height: 420px) {
@@ -4858,6 +4898,7 @@ a.contacts-wrapper__link {
     body ul.blog-tabs {
         margin-bottom: 1rem;
     }
+
     section {
         padding-top: 60px;
     }
@@ -4930,6 +4971,7 @@ a.contacts-wrapper__link {
         width: 22px;
         height: 22px;
     }
+
     section {
         padding-top: 60px;
     }
@@ -5409,6 +5451,14 @@ a.contacts-wrapper__link {
 
     .action-object-text.archive {
         font-size: 12px;
+    }
+
+    h3.listing-price__item {
+        font-size: 15px;
+    }
+
+    h3.listing-price__item.single {
+        font-size: 15px;
     }
 }
 

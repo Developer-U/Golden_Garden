@@ -29,9 +29,9 @@ $address = get_field('address', 'options');
             </a>
         <?php } ?>
 
-        <a href="#footer" class="button transparent-btn hero-slider__button1">
+        <!-- <a href="#footer" class="button transparent-btn hero-slider__button1">
             Быстрый подбор объекта
-        </a>
+        </a> -->
     </div>  
 
     <div class="swiper main-hero__slider hero-slider">

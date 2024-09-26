@@ -65,7 +65,7 @@ if (post_password_required()) {
 		?>
 		<?php			
 		if (!has_term('secondary_housing', 'product_cat')) { ?>
-			<div class="product-single-description">
+			<div class="product-single-description post">
 				<?php the_content(); ?>
 			</div>
 		<?php } ?>

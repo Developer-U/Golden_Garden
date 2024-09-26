@@ -58,7 +58,7 @@ function delete_shop_categories_end()
 function add_cat_list()
 {
     $taxonomy = 'product_cat';
-    $empty = 0;
+    $empty = 1;
     $args = array(
         'taxonomy' => $taxonomy,
         'hide_empty' => $empty,
@@ -192,16 +192,29 @@ function add_archive_action_object()
     }
 }
 
-// Добавим в карточку в листинге краткие характеристики - поля ACF
+// Добавим в карточку в листинге краткие характеристики - поля ACF, в т.ч. вывод цен
 add_action('woocommerce_after_shop_loop_item_title', 'add_excerpt_product', 5);
 
 function add_excerpt_product()
 {
-    if (have_rows('add_param_block')):
+    $new_buildings_min_price = get_field('new_buildings_min_price');
+    $new_buildings_max_price = get_field('new_buildings_max_price');
+
+    if (have_rows('add_param_block') || ($new_buildings_min_price || $new_buildings_max_price)) {
         ?>
         <table>
+            <!-- Если добавлены минимальная цена и максимальная цена лотов в первичке, то показываем их: -->
+            <?php if ($new_buildings_min_price || $new_buildings_max_price) {
+                echo '<div class="listing-price d-flex flex-wrap flex-column gap-1 gap-md-2">';
+                if ($new_buildings_min_price) {
+                    echo '<h3 class="listing-price__item col-auto">от ' . number_format($new_buildings_min_price, 0, '.', ' ') . ' ₽</h3>';
+                }
+                if ($new_buildings_max_price) {
+                    echo '<h3 class="listing-price__item col-auto">до ' . number_format($new_buildings_max_price, 0, '.', ' ') . ' ₽</h3>';
+                }
+                echo '</div>';
+            }
 
-            <?php
             if (have_rows('add_param_block')):
                 while (have_rows('add_param_block')):
                     the_row();
@@ -218,7 +231,19 @@ function add_excerpt_product()
             <?php endif; ?>
 
         </table>
-    <?php endif;
+    <?php }
+}
+
+// Добавим в листинге категорий Вторичка и виллы вывод цены
+add_action('woocommerce_after_shop_loop_item_title', 'add_listing_price', 5);
+
+function add_listing_price()
+{
+    $object_price = get_field('object_price');
+    $object_price_num = number_format($object_price, 0, '.', ' ');
+    if ($object_price) {
+        echo '<h3 class="listing-price__item">' . $object_price_num . ' ₽</h3>';
+    }
 }
 
 // Добавим в карточку в листинге подробное описание объекта
@@ -349,14 +374,25 @@ function delete_cart_form_end()
     echo '</div>';
 }
 
-// Выведем цену объекта только для объекта вторички
+// Выведем цену объекта
 add_action('woocommerce_single_product_summary', 'add_object_price', 5);
 
 function add_object_price()
 {
     $object_price = get_field('object_price');
+    $object_price_num = number_format($object_price, 0, '.', ' ');
+    $new_buildings_min_price = get_field('new_buildings_min_price');
+    $new_buildings_max_price = get_field('new_buildings_max_price');
+
     if ($object_price) {
-        echo '<h2 class="object-price">' . $object_price . '&nbsp;₽</h2>';
+        echo '<h3 class="listing-price__item single">' . $object_price_num . ' ₽</h3>';
+    } elseif ($new_buildings_min_price || $new_buildings_max_price) {
+        echo '<div class="listing-price d-flex flex-wrap gap-1 gap-md-2">';
+        if ($new_buildings_min_price) {
+            echo '<h3 class="listing-price__item single col-auto">от ' . number_format($new_buildings_min_price, 0, '.', ' ') . ' ₽</h3>';
+        }
+
+        echo '</div>';
     }
 }
 
@@ -399,7 +435,7 @@ function add_link_to_gallery()
     }
 }
 
-// В объектах вторички поверх фотографии добавим плашку про акцию
+// В объектах поверх фотографии добавим плашку про акцию
 add_action('woocommerce_before_single_product_summary', 'add_action_object', 10);
 
 function add_action_object()
@@ -439,7 +475,7 @@ function add_tab_configurations($tabs_objects)
             'callback' => 'child_new_tab_configurations'
         );
     }
-    if (has_term('new_buildings', 'product_cat') && (have_rows('add_tab_presentations') || have_rows('add_tab_video_presentations'))) {  // Презентации
+    if (has_term('new_buildings', 'product_cat') && (have_rows('add_tab_presentations') || have_rows('add_tab_video_presentations') || have_rows('add_tab_video_file_presentations'))) {  // Презентации
         $tabs_objects['presentations'] = array(
             'title' => 'Презентации',
             'priority' => 45,
@@ -590,7 +626,7 @@ function child_new_tab_configurations($tab_fields_postfix)
     <div class="product-tab__content">
         <?php
 
-        // Вёрстка таба "Фотогалерея" только для категории "Готовое жильё"
+        // Вёрстка таба "Фотогалерея"
         if ($tab_fields_postfix == 'tab_object_gallery') {
             ?>
 
@@ -712,6 +748,8 @@ function add_cta_single_form()
         </div>
     </div>
 <?php }
+
+
 
 
 
