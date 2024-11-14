@@ -239,9 +239,9 @@ add_action('woocommerce_after_shop_loop_item_title', 'add_listing_price', 5);
 
 function add_listing_price()
 {
-    $object_price = get_field('object_price');
-    $object_price_num = number_format($object_price, 0, '.', ' ');
+    $object_price = get_field('object_price');    
     if ($object_price) {
+        $object_price_num = number_format($object_price, 0, '.', ' ');
         echo '<h3 class="listing-price__item">' . $object_price_num . ' ₽</h3>';
     }
 }
@@ -312,6 +312,8 @@ function in_woocommerce_catalog_orderby($args)
 {
     unset($args['popularity']); // Удаляем сортировку по Популярности
     unset($args['rating']); // Удаляем сортировку по Рейтингу
+    unset($args['price']); // Удаляем сортировку по возрастанию цены
+    unset($args['price-desc']); // Удаляем сортировку по убыванию цены
     return $args;
 }
 
@@ -336,6 +338,18 @@ function custom_woocommerce_get_catalog_ordering_name_args($args)
         $args['meta_key'] = 'top_attr';
     }
 
+    if ('price_list' == $orderby_value) {
+        $args['orderby'] = 'meta_value_num';
+        $args['order'] = 'ASC';
+        $args['meta_key'] = 'object_price';
+    }
+
+    if ('price_list_desc' == $orderby_value) {
+        $args['orderby'] = 'meta_value_num';
+        $args['order'] = 'DESC';
+        $args['meta_key'] = 'object_price';
+    }
+
     return $args;
 
 }
@@ -349,6 +363,10 @@ function custom_woocommerce_catalog_name_orderby($sortby)
 {
     $sortby['name_list'] = 'По названию от А до Я';
     $sortby['attr_list'] = 'Сначала ТОП';
+    if (!has_term('new_buildings', 'product_cat')) {
+        $sortby['price_list'] = 'По возрастанию цены';
+        $sortby['price_list_desc'] = 'По убыванию цены';
+    }
     return $sortby;
 }
 ;
@@ -379,12 +397,12 @@ add_action('woocommerce_single_product_summary', 'add_object_price', 5);
 
 function add_object_price()
 {
-    $object_price = get_field('object_price');
-    $object_price_num = number_format($object_price, 0, '.', ' ');
+    $object_price = get_field('object_price');    
     $new_buildings_min_price = get_field('new_buildings_min_price');
     $new_buildings_max_price = get_field('new_buildings_max_price');
 
     if ($object_price) {
+        $object_price_num = number_format($object_price, 0, '.', ' ');
         echo '<h3 class="listing-price__item single">' . $object_price_num . ' ₽</h3>';
     } elseif ($new_buildings_min_price || $new_buildings_max_price) {
         echo '<div class="listing-price d-flex flex-wrap gap-1 gap-md-2">';
@@ -430,8 +448,18 @@ add_action('woocommerce_single_product_summary', 'add_link_to_gallery', 10);
 
 function add_link_to_gallery()
 {
-    if (have_rows('add_tab_object_gallery')) {
-        echo '<a class="product-more-photo" href="#tab-tab_object_gallery">Показать ещё фото</a>';
+    $broker_phone = get_field('broker_phone');
+    $tel = str_replace([' ', '(', ')', '-', '+7'], '',  $broker_phone);
+
+    if (have_rows('add_tab_object_gallery') || $broker_phone) {
+        echo '<div class="broker-phone d-flex align-items-center gap-4">';
+        if (have_rows('add_tab_object_gallery')) {
+            echo '<a class="product-more-photo" href="#tab-tab_object_gallery">Показать ещё фото</a>';
+        }
+        if($broker_phone) {
+            echo '<p>Позвонить:&nbsp;&nbsp;<a class="broker-phone__tel" href="tel:7' .$tel. '">' .$broker_phone. '</a></p>';
+        }
+        echo '</div>';
     }
 }
 

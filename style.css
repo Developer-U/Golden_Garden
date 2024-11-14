@@ -2365,6 +2365,21 @@ h1.single-page__title.single-page__title_team {
     color: var(--gold);
 }
 
+.broker-phone {
+    margin-top: 2rem;
+}
+
+.broker-phone p {
+    margin-bottom: 0;
+}
+
+a.broker-phone__tel {
+    margin-bottom: 0;
+    font-weight: 800;
+    color: var(--red);
+    font-family: var(--nunito);
+}
+
 a.product-more-photo {
     color: var(--deep-blue);
     display: block;
@@ -2372,7 +2387,6 @@ a.product-more-photo {
     border: 1px solid var(--gold);
     border-radius: 8px;
     width: fit-content;
-    margin-top: 2rem;
 }
 
 .action-object-text {
